@@ -86,3 +86,7 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# IntelliJ
+/foosbot.iml
+/.idea/
