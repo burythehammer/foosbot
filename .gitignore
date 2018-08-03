@@ -90,3 +90,9 @@ ENV/
 # IntelliJ
 /foosbot.iml
 /.idea/
+
+# Terraform
+/terraform/terraform.tfstate
+/.terraform.tfstate.lock.info
+/terraform/.terraform/
+/terraform/terraform.tfstate.backup
