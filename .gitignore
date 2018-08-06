@@ -92,7 +92,8 @@ ENV/
 /.idea/
 
 # Terraform
-/terraform/terraform.tfstate
-/.terraform.tfstate.lock.info
-/terraform/.terraform/
-/terraform/terraform.tfstate.backup
+infrastructure/terraform.tfstate
+.terraform.tfstate.lock.info
+infrastructure/.terraform/
+infrastructure/terraform.tfstate.backup
+infrastructure/terraform.tfvars
