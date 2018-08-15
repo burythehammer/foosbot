@@ -1,20 +1,26 @@
 #!/usr/bin/env python
 
-import slacker
-# import json
-import websocket
-import slackparser
-import json
-import traceback
-import time
-import sys
-import yaml
 import datetime
+import json
 import os
+import sys
+import time
+import traceback
+
+import slacker
+import websocket
+import yaml
+
+import slackparser
 
 config = yaml.load(open('config.yaml'))
-slack_token = os.getenv("SLACK_TOKEN", "")
-slack = slacker.Slacker(slack_token)
+
+config['botuser'] = os.getenv("BOT_USER", "")
+config['adminuser'] = os.getenv("ADMIN_USER", "")
+config['fooschan'] = os.getenv("FOOSBALL_CHANNEL", "")
+config['slack_token'] = os.getenv("SLACK_TOKEN", "")
+
+slack = slacker.Slacker(config['slack_token'])
 
 
 def getniceuser(users, n):

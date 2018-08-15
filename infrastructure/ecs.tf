@@ -6,24 +6,29 @@ provider "aws" {
 
 ### ECS
 
-resource "aws_ecs_cluster" "main" {
+resource "aws_ecs_cluster" "foosbot-cluster" {
   name = "foosbot-cluster"
 }
 
 resource "aws_ecs_task_definition" "foosbot-task" {
-  family = "foosbot"
-  network_mode = "awsvpc"
+  family = "foosbot-task-family"
+
   requires_compatibilities = [
     "FARGATE"]
-  cpu = "${var.fargate_cpu}"
-  memory = "${var.fargate_memory}"
 
-  execution_role_arn = "${data.aws_iam_role.ecs_task_execution_role.arn}"
+  task_role_arn = "arn:aws:iam::377469707739:role/ecsTaskExecutionRole"
+  execution_role_arn = "arn:aws:iam::377469707739:role/ecsTaskExecutionRole"
+
+  network_mode = "awsvpc"
+
+  memory = "${var.fargate_memory}"
+  cpu = "${var.fargate_cpu}"
+
   container_definitions = <<DEFINITION
 [
   {
     "cpu": ${var.fargate_cpu},
-    "image": "${aws_ecr_repository.foosbot-repo.repository_url}:1",
+    "image": "${aws_ecr_repository.foosbot-repo.repository_url}:latest",
     "memory": ${var.fargate_memory},
     "name": "foosbot",
     "networkMode": "awsvpc",
@@ -49,17 +54,22 @@ resource "aws_ecs_task_definition" "foosbot-task" {
       "name": "S3_BUCKET",
       "value": "${aws_s3_bucket.result-bucket.bucket}"
     },
+ {
+      "name": "BOT_USER",
+      "value": "${var.botuser}"
+    },
+ {
+      "name": "ADMIN_USER",
+      "value": "${var.adminuser}"
+    },
+ {
+      "name": "FOOSBALL_CHANNEL",
+      "value": "${var.foosball_channel}"
+    },
    {
       "name": "SLACK_TOKEN",
       "value": "${var.slacktoken}"
     }
-    ],
-
-    "portMappings": [
-      {
-        "containerPort": ${var.app_port},
-        "hostPort": ${var.app_port}
-      }
     ]
   }
 ]
@@ -68,26 +78,26 @@ DEFINITION
 
 resource "aws_ecs_service" "foosbot-ecs-service" {
   name = "foosbot-ecs-service"
-  cluster = "${aws_ecs_cluster.main.id}"
+  cluster = "${aws_ecs_cluster.foosbot-cluster.id}"
   task_definition = "${aws_ecs_task_definition.foosbot-task.arn}"
-  desired_count = "${var.app_count}"
+  desired_count = 1
   launch_type = "FARGATE"
 
   network_configuration {
     security_groups = [
-      "${aws_security_group.ecs_tasks.id}"]
+      "${aws_security_group.foosball-security-group.id}"]
     subnets = [
-      "${aws_subnet.private.*.id}"]
+      "${aws_subnet.public.*.id}"]
     assign_public_ip = true
   }
 }
 
 ### ECR
 
-resource "aws_ecr_repository" "foosbot-repo" {
+resource "aws_ecr_repository"  "foosbot-repo" {
   name = "foosbot-ecr-repository"
 
   provisioner "local-exec" {
-    command = "cd .. && docker build -t ${aws_ecr_repository.foosbot-repo.repository_url} . && docker push ${aws_ecr_repository.foosbot-repo.repository_url}"
+    command = "cd .. && docker build -t ${aws_ecr_repository.foosbot-repo.name} . && docker tag ${aws_ecr_repository.foosbot-repo.name}:latest ${aws_ecr_repository.foosbot-repo.repository_url}:latest && docker push ${aws_ecr_repository.foosbot-repo.repository_url}:latest"
   }
 }
