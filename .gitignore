@@ -97,3 +97,5 @@ infrastructure/terraform.tfstate
 infrastructure/.terraform/
 infrastructure/terraform.tfstate.backup
 infrastructure/terraform.tfvars
+.terraform
+*.tfvars

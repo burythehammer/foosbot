@@ -18,17 +18,24 @@ variable "az_count" {
 }
 
 variable "foosbot_log_level" {
+  description = "Log level that foosbot will output at"
   default = "WARNING"
 }
 
-variable "slacktoken" {
+variable "slack_token" {
+  description = "Token used to authenticate with slack. Keep secret."
 }
 
-variable "botuser" {
+variable "bot_user" {
+  description = "Slack user that bot will assume in channel"
 }
 
-variable "adminuser" {
+variable "admin_user" {
+  description = "User that bot will message / contact if things go wrong"
 }
 
 variable "foosball_channel" {
+  description = "Channel that users will log their scores and communicate with foosbot with"
 }
+
+variable "results_bucket" {}

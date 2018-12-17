@@ -52,15 +52,15 @@ resource "aws_ecs_task_definition" "foosbot-task" {
 
    {
       "name": "S3_BUCKET",
-      "value": "${aws_s3_bucket.result-bucket.bucket}"
+      "value": "${var.results_bucket}"
     },
  {
       "name": "BOT_USER",
-      "value": "${var.botuser}"
+      "value": "${var.bot_user}"
     },
  {
       "name": "ADMIN_USER",
-      "value": "${var.adminuser}"
+      "value": "${var.admin_user}"
     },
  {
       "name": "FOOSBALL_CHANNEL",
@@ -68,7 +68,7 @@ resource "aws_ecs_task_definition" "foosbot-task" {
     },
    {
       "name": "SLACK_TOKEN",
-      "value": "${var.slacktoken}"
+      "value": "${var.slack_token}"
     }
     ]
   }

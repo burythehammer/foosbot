@@ -10,12 +10,6 @@ resource "aws_vpc" "foosbot-vpc" {
   }
 }
 
-//resource "aws_default_vpc" "default-vpc" {
-//  tags {
-//    Name = "Default VPC"
-//  }
-//}
-
 # Create var.az_count public subnets, each in a different AZ
 resource "aws_subnet" "public" {
   cidr_block = "${aws_vpc.foosbot-vpc.cidr_block}"
